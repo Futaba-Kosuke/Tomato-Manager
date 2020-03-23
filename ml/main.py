@@ -9,12 +9,17 @@ import numpy as np
 import glob, os
 import matplotlib.pyplot as plt
 import random, math
+import tensorflow as tf
+import keras
+# 不要な警告を非表示にする
+import warnings
+warnings.filterwarnings('ignore')
 
 #ラベリングによる学習/検証データの準備
 #画像が保存されているルートディレクトリのパス
 root_dir = "パス"
 # 熟し具合
-categories = ["熟している", "熟す途中", "熟していない"]
+categories = ["1.熟している", "2.熟す途中", "3.熟していない"]
 
 # 画像データ用配列
 X = []
@@ -61,19 +66,32 @@ xy = (X_train, X_test, y_train, y_test)
 np.save("保存先パス/tomato_data.npy", xy)
 
 #モデルの構築
-model = models.Sequential()
-model.add(Conv2D(32,(3,3),Activation="relu",input_shape=(150,150,3)))
-model.add(MaxPooling2D((2,2)))
-model.add(Conv2D(64,(3,3),Activation="relu"))
-model.add(MaxPooling2D((2,2)))
-model.add(Conv2D(128,(3,3),Activation="relu"))
-model.add(MaxPooling2D((2,2)))
-model.add(Conv2D(128,(3,3),Activation="relu"))
-model.add(MaxPooling2D((2,2)))
+model = Sequential()
+
+model.add(Conv2D(filters=32,input_shape=(150,150,3), kernel_size=(18,18), strides=(1,1), padding='same'))
+model.add(MaxPooling2D(pool_size=(2,2)))
+model.add(Activation('relu'))
+
+model.add(Conv2D(filters=64,kernel_size=(18,18), strides=(1,1), padding='same'))
+model.add(MaxPooling2D(pool_size=(2,2)))
+model.add(Activation('relu'))
+          
+model.add(Conv2D(filters=128,kernel_size=(18,18), strides=(1,1), padding='same'))
+model.add(MaxPooling2D(pool_size=(2,2)))
+model.add(Activation('relu'))
+
+model.add(Conv2D(filters=128,kernel_size=(18,18), strides=(1,1), padding='same'))
+model.add(MaxPooling2D(pool_size=(2,2)))
+model.add(Activation('relu'))
+
+model.add(MaxPooling2D(pool_size=(2,2)))
 model.add(Flatten())
 model.add(Dropout(0.2))
-model.add(Dense(512,Activation="relu"))
-model.add(Dense(10,Activation="sigmoid")) #分類先の種類分設定
+model.add(Dense(512))
+model.add(Activation('relu'))
+
+model.add(Dense(10))
+model.add(Activation("sigmoid")) #分類先の種類分設定
 
 #モデル構成の確認
 model.summary()
@@ -83,7 +101,7 @@ model.compile(loss='categorical_crossentropy',
               optimizer = Adam(),
               metrics = ['accuracy'])
 
-categories = ["熟している", "熟す途中", "熟していない"]
+categories = ["1.熟している", "2.熟す途中", "3.熟していない"]
 nb_classes = len(categories)
 
 X_train, X_test, y_train, y_test = np.load("保存した学習データ・テストデータのパス")
