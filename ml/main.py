@@ -17,9 +17,12 @@ warnings.filterwarnings('ignore')
 
 #ラベリングによる学習/検証データの準備
 #画像が保存されているルートディレクトリのパス
-root_dir = "パス"
+root_dir = "conken\tashiro\Tomato-Manager\ml\data\
+|-1\
+|-2\
+|-3"
 # 熟し具合
-categories = ["1.熟している", "2.熟す途中", "3.熟していない"]
+categories = [1, 2, 3]
 
 # 画像データ用配列
 X = []
@@ -49,7 +52,7 @@ allfiles = []
 
 #カテゴリ配列の各値と、それに対応するidxを認識し、全データをallfilesにまとめる
 for idx, cat in enumerate(categories):
-    image_dir = root_dir + "/" + cat
+    image_dir = root_dir + "/" + str(cat)
     files = glob.glob(image_dir + "/*.jpg")
     for f in files:
         allfiles.append((idx, f))
@@ -63,7 +66,7 @@ X_train, y_train = make_sample(train)
 X_test, y_test = make_sample(test)
 xy = (X_train, X_test, y_train, y_test)
 #データを保存する（データの名前を「tomato_data.npy」としている）
-np.save("保存先パス/tomato_data.npy", xy)
+np.save("conken\tashiro\Tomato-Manager\ml\tomato_data.npy", xy)
 
 #モデルの構築
 model = Sequential()
@@ -87,10 +90,10 @@ model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2,2)))
 model.add(Flatten())
 model.add(Dropout(0.2))
-model.add(Dense(512))
+model.add(Dense(3))
 model.add(Activation('relu'))
 
-model.add(Dense(10))
+model.add(Dense(3))
 model.add(Activation("sigmoid")) #分類先の種類分設定
 
 #モデル構成の確認
@@ -101,27 +104,26 @@ model.compile(loss='categorical_crossentropy',
               optimizer = Adam(),
               metrics = ['accuracy'])
 
-categories = ["1.熟している", "2.熟す途中", "3.熟していない"]
+categories = [1, 2, 3]
 nb_classes = len(categories)
 
-X_train, X_test, y_train, y_test = np.load("保存した学習データ・テストデータのパス")
+X_train, X_test, y_train, y_test = np.load("conken\tashiro\Tomato-Manager\ml\tomato_data.npy")#保存した学習データ・テストデータのパス
 
 #データの正規化
 X_train = X_train.astype("float") / 255
 X_test  = X_test.astype("float")  / 255
 
 #one-hotエンコーディング
-y_train = np.identity(5)[y_train].astype('i')
-y_test = np.identity(5)[y_test].astype('i')
+y_train = np.identity(3)[y_train].astype('i')
+y_test = np.identity(3)[y_test].astype('i')
 
 # 学習の開始
-model.fit(X_train, 
-          Y_train,
-          epochs=30,
-          validation_data=(X_test, Y_test),
-          verbose=1,
-          batch_size=#サンプル数
-          )
+hist = model.fit(X_train,
+           y_train,
+           epochs=30,
+           validation_data=(X_test, y_test),
+           verbose=1,
+           batch_size=500)#サンプル数
 
 #学習結果を表示
 def plot_history_loss(hist):
@@ -136,7 +138,7 @@ def plot_history_loss(hist):
 
 def plot_history_acc(hist):
     # 精度(Accuracy)の遷移のプロット
-    plt.plot(hist.history['acc'],label="loss for training")
+    plt.plot(hist.history['accuracy'],label="loss for training")
     plt.plot(hist.history['val_acc'],label="loss for validation")
     plt.title('model accuracy')
     plt.xlabel('epoch')
