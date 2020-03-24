@@ -17,10 +17,7 @@ warnings.filterwarnings('ignore')
 
 #ラベリングによる学習/検証データの準備
 #画像が保存されているルートディレクトリのパス
-root_dir = "conken\tashiro\Tomato-Manager\ml\data\
-|-1\
-|-2\
-|-3"
+root_dir = "./data"
 # 熟し具合
 categories = [1, 2, 3]
 
@@ -66,7 +63,7 @@ X_train, y_train = make_sample(train)
 X_test, y_test = make_sample(test)
 xy = (X_train, X_test, y_train, y_test)
 #データを保存する（データの名前を「tomato_data.npy」としている）
-np.save("conken\tashiro\Tomato-Manager\ml\tomato_data.npy", xy)
+np.save("./data/tomato_data.npy", xy)
 
 #モデルの構築
 model = Sequential()
@@ -90,7 +87,7 @@ model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2,2)))
 model.add(Flatten())
 model.add(Dropout(0.2))
-model.add(Dense(3))
+model.add(Dense(200))
 model.add(Activation('relu'))
 
 model.add(Dense(3))
@@ -107,7 +104,12 @@ model.compile(loss='categorical_crossentropy',
 categories = [1, 2, 3]
 nb_classes = len(categories)
 
-X_train, X_test, y_train, y_test = np.load("conken\tashiro\Tomato-Manager\ml\tomato_data.npy")#保存した学習データ・テストデータのパス
+X_train, X_test, y_train, y_test = np.load("./data/tomato_data.npy")#保存した学習データ・テストデータのパス
+
+X_train = X_train[:10]
+X_test = X_test[:10]
+y_train = y_train[:10]
+y_test = y_test[:10]
 
 #データの正規化
 X_train = X_train.astype("float") / 255
@@ -120,10 +122,10 @@ y_test = np.identity(3)[y_test].astype('i')
 # 学習の開始
 hist = model.fit(X_train,
            y_train,
-           epochs=30,
+           epochs=10,
            validation_data=(X_test, y_test),
            verbose=1,
-           batch_size=500)#サンプル数
+           batch_size=1)#サンプル数
 
 #学習結果を表示
 def plot_history_loss(hist):
@@ -139,7 +141,7 @@ def plot_history_loss(hist):
 def plot_history_acc(hist):
     # 精度(Accuracy)の遷移のプロット
     plt.plot(hist.history['accuracy'],label="loss for training")
-    plt.plot(hist.history['val_acc'],label="loss for validation")
+    plt.plot(hist.history['val_accuracy'],label="loss for validation")
     plt.title('model accuracy')
     plt.xlabel('epoch')
     plt.ylabel('accuracy')
