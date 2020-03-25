@@ -63,6 +63,10 @@ X_train, y_train = make_sample(train)
 X_test, y_test = make_sample(test)
 xy = (X_train, X_test, y_train, y_test)
 #データを保存する（データの名前を「tomato_data.npy」としている）
+#tomato_data.npyの作成（まだmlディレクトリにファイルがある）
+file = open('./data/tomato_data.npy', 'w')
+file.close()
+#データの保存
 np.save("./data/tomato_data.npy", xy)
 
 #モデルの構築
@@ -104,7 +108,7 @@ model.compile(loss='categorical_crossentropy',
 categories = [1, 2, 3]
 nb_classes = len(categories)
 
-X_train, X_test, y_train, y_test = np.load("./data/tomato_data.npy")#保存した学習データ・テストデータのパス
+X_train, X_test, y_train, y_test = np.load("./data/tomato_data.npy", allow_pickle=True)#保存した学習データ・テストデータのパス
 
 X_train = X_train[:10]
 X_test = X_test[:10]
