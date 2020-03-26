@@ -5,7 +5,31 @@ import base64
 import requests
 import json
 
+import tensorflow as tf
+import keras
+import keras
+from keras.models import Sequential
+from keras.layers import Dense, Activation,Dropout
+from keras.layers.convolutional import Conv2D
+from keras.layers.pooling import MaxPooling2D
+from keras.layers import Flatten
+from keras.optimizers import Adam
+from keras.models import load_model
+from keras.models import model_from_json
+
 app = Flask(__name__)
+
+graph = tf.get_default_graph()
+
+# JSONファイルからモデルのアーキテクチャを得る
+model_arc_str = open('./model/model_architecture.json').read()
+model = model_from_json(model_arc_str)
+
+# モデル構成の確認
+model.summary()
+
+# モデルの重みを得る
+model.load_weights('./model/weights.hdf5')
 
 @app.route('/test', methods=['GET'])
 def get_test():
@@ -25,23 +49,32 @@ def numpy_to_base64(img_np):
     return img_base64
 
 def img_processing(img_base64):
-    X = base64_to_numpy(img_base64)
-    """
-    ここに機械学習の処理を書き込む
-    """
-    y = 1  # 機械学習によって求める。テスト用に1としておく。
-    return y
-
-@app.route('/img/<num>', methods=['GET'])
-def get_img(num):
-    # camera_mockにリクエストを送る
-    response = requests.get('http://127.0.0.1:5001/camera/1')
-    img_base64 = response.text
-    return img_base64
+    global graph
+    with graph.as_default():
+        X = base64_to_numpy(img_base64)
+        print(X.shape)
+        X = cv2.resize(X, (150, 150))
+        X = X.astype('float') / 255
+        X = X.reshape(1, 150, 150, 3)
+        print(X.shape)
+        y = model.predict(X)
+        # y = 1  # 機械学習によって求める。テスト用に1としておく。
+        if np.round(y)[0][0] == 1:
+            result = 0
+        else:
+            result = 1
+        return result
 
 @app.route('/result/<num>', methods=['GET'])
 def get_img_processing_result(num):
-    response = requests.get('http://127.0.0.1:5001/camera/1')
+    response = requests.get('http://127.0.0.1:5001/camera/' + num)
     img_base64 = response.text
     result = img_processing(img_base64)
-    return str(result)
+    return {
+        'result': str(result), 
+        'img_base64': img_base64
+    }
+
+if __name__ == '__main__':
+    model = create_model()
+    model.load_weights('./model/model.ckpt')
