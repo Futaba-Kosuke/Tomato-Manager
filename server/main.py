@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 import numpy as np
 import cv2
 import base64
@@ -6,7 +7,6 @@ import requests
 import json
 
 import tensorflow as tf
-import keras
 import keras
 from keras.models import Sequential
 from keras.layers import Dense, Activation,Dropout
@@ -18,6 +18,7 @@ from keras.models import load_model
 from keras.models import model_from_json
 
 app = Flask(__name__)
+CORS(app)
 
 graph = tf.get_default_graph()
 
@@ -60,20 +61,37 @@ def img_processing(img_base64):
         y = model.predict(X)
         # y = 1  # 機械学習によって求める。テスト用に1としておく。
         if np.round(y)[0][0] == 1:
-            result = 0
+            result = False
         else:
-            result = 1
+            result = True
         return result
 
 @app.route('/result/<num>', methods=['GET'])
-def get_img_processing_result(num):
+def get_result(num):
     response = requests.get('http://127.0.0.1:5001/camera/' + num)
     img_base64 = response.text
-    result = img_processing(img_base64)
-    return {
-        'result': str(result), 
+    y = img_processing(img_base64)
+    result = {
+        'result': y, 
         'img_base64': img_base64
     }
+    return result
+
+@app.route('/result', methods=['GET'])
+def get_results():
+
+    results = {}
+    for num in range(1, 5):
+        response = requests.get('http://127.0.0.1:5001/camera/' + str(num))
+        img_base64 = response.text
+        y = img_processing(img_base64)
+        result = {
+            'result': y, 
+            'img_base64': img_base64
+        }
+        results[str(num)] = result
+    
+    return results
 
 if __name__ == '__main__':
     model = create_model()

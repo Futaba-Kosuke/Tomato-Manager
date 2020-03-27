@@ -1,32 +1,30 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app>
+    <v-app-bar app dark color="rgb(245, 90, 80)" height="90">
+      <v-toolbar-title class="headline text-uppercase">
+        <span class="title_font">トマト監視システム</span>
+      </v-toolbar-title>
+    </v-app-bar>
+
+    <v-content class="content">
+      <Home/>
+    </v-content>
+  </v-app>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import Home from './components/views/Home'
 
-#nav {
-  padding: 30px;
+export default {
+  name: 'App',
+  components: {
+    Home,
+  },
 }
+</script>
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+<style scoped>
+.content {
+  background-color: rgb(188, 210, 3);
 }
 </style>
