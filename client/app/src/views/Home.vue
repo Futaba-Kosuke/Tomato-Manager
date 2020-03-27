@@ -9,16 +9,19 @@
 </template>
 
 <script>
-import HelloWorld from '@/components/HelloWorld.vue'
 import GetImageButton from '@/components/GetImageButton.vue'
 import ImageDialog from '@/components/ImageDialog'
+import { getResults } from '../api/index'
 
 export default {
   name: 'Home',
   components: {
-    HelloWorld,
     GetImageButton,
     ImageDialog
   },
+  created: async function() {
+    const results = await getResults()
+    this.$store.commit('updateResults', results.data)
+  }
 }
 </script>
