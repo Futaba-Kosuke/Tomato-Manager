@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar app dark color="rgb(245, 90, 80)" height="90">
       <v-toolbar-title class="headline text-uppercase">
-        <span class="title_font">トマト監視システム</span>
+        <span class="title_font">トマト成熟監視システム</span>
       </v-toolbar-title>
     </v-app-bar>
 
