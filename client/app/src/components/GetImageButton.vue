@@ -1,13 +1,14 @@
 <template>
-  <v-container>
+  <v-row justify="center">
     <v-btn
       @click="sendRequest()"
       height="50"
       width="150"
+      class="v-btn"
     >
-      写真を撮影
+      写真を再撮影
     </v-btn>
-  </v-container>
+  </v-row>
 </template>
 
 <script>
@@ -25,7 +26,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>
