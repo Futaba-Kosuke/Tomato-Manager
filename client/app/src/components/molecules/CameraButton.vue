@@ -1,9 +1,12 @@
 <template>
-<v-container>
+<div
+  :style="styles"
+>
   <v-btn
     color="primary"
     dark
     @click.stop="dialogFlag = true"
+
   >
     {{ 'カメラ' + this.windowId }}
   </v-btn>
@@ -23,14 +26,19 @@
       />
     </v-card>
   </v-dialog>
-</v-container>
+</div>
 </template>
 
 <script>
 export default {
   name: 'ImageWindow',
   props: {
-    windowId: String
+    windowId: String,
+    position: {},
+    top: {},
+    bottom: {},
+    left: {},
+    right: {}
   },
   data: function() {
     return {
@@ -43,14 +51,16 @@ export default {
       if (imgBase64 != '')
         return 'data:image/jpeg;base64,' + imgBase64
       return ''
+    },
+    styles: function() {
+      return {
+        position: this.position,
+        top: Number(this.top),
+        bottom: Number(this.bottom),
+        left: Number(this.left),
+        right: Number(this.right),
+      }
     }
   },
-  methods: {
-
-  }
 }
 </script>
-
-<style scoped>
-
-</style>

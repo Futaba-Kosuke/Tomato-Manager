@@ -1,23 +1,20 @@
 <template>
-  <v-container>
+  <v-container justify="center">
     <GetImageButton/>
-    <ImageDialog windowId="1" />
-    <ImageDialog windowId="2" />
-    <ImageDialog windowId="3" />
-    <ImageDialog windowId="4" />
+    <CamerasDisposition/>
   </v-container>
 </template>
 
 <script>
 import GetImageButton from '@/components/organisms/GetImageButton.vue'
-import ImageDialog from '@/components/molecules/ImageDialog'
+import CamerasDisposition from '@/components/organisms/CamerasDisposition.vue'
 import { getResults } from '../../api/index'
 
 export default {
   name: 'Home',
   components: {
     GetImageButton,
-    ImageDialog
+    CamerasDisposition
   },
   created: async function() {
     const results = await getResults()

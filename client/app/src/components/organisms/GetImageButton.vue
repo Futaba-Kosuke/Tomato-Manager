@@ -1,5 +1,5 @@
 <template>
-  <v-row justify="center">
+  <v-row justify="center" class="row">
     <v-btn
       @click="sendRequest()"
       height="50"
@@ -26,3 +26,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.row{
+  margin-top: 50px;
+}
+</style>
