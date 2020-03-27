@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 import numpy as np
 import cv2
 import base64
@@ -6,7 +7,6 @@ import requests
 import json
 
 import tensorflow as tf
-import keras
 import keras
 from keras.models import Sequential
 from keras.layers import Dense, Activation,Dropout
@@ -18,6 +18,7 @@ from keras.models import load_model
 from keras.models import model_from_json
 
 app = Flask(__name__)
+CORS(app)
 
 graph = tf.get_default_graph()
 
