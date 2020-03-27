@@ -9,9 +9,9 @@
 </template>
 
 <script>
-import GetImageButton from '@/components/GetImageButton.vue'
-import ImageDialog from '@/components/ImageDialog'
-import { getResults } from '../api/index'
+import GetImageButton from '@/components/organisms/GetImageButton.vue'
+import ImageDialog from '@/components/molecules/ImageDialog'
+import { getResults } from '../../api/index'
 
 export default {
   name: 'Home',

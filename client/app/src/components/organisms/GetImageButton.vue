@@ -13,7 +13,7 @@
 
 <script>
 import axios from 'axios'
-import { getResults } from '../api/index'
+import { getResults } from '../../api/index'
 
 export default {
   name: 'GetImageButton',
