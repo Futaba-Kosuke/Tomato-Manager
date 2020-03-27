@@ -21,7 +21,6 @@ export default {
     sendRequest: async function() {
       const results = await getResults()
       this.$store.commit('updateResults', results.data)
-      console.log(this.$store.state.results)
     }
   }
 }
